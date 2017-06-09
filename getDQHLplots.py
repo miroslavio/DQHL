@@ -1,25 +1,9 @@
+from download_from_couchdb import download_from_couchdb
 import argparse
-import couchdb
 import sys
 import matplotlib.pyplot as plt
 import numpy as np
 
-#Connect to the couch database called dbName, return database
-def getData(server, runNumber):
-    #Accessing database
-    try:
-        dqDB = server['data-quality']
-    except:
-        print "Unable to access data quality database."
-        sys.exit(1)
-        
-    data = None
-    for row in dqDB.view('_design/data-quality/_view/runs'):
-        if(int(row.key) == runNumber):
-            runDocId = row['id']
-            data = dqDB.get(runDocId)
-            return data
-    
 def plotEventRate(x,y):
     plt.plot(x,y,'bo')
     plt.xlabel('Run number')
@@ -45,18 +29,8 @@ if __name__=="__main__":
         print "First run number must be lower or equal to the last run number."
         sys.exit(1)
 
-    #Connect to couchDB
-    server = couchdb.Server("http://snoplus:dontestopmenow@couch.snopl.us")
-    
-    #Get dq info
-    x = range(firstRun, lastRun+1)
-    y = []
-    for run in range(firstRun, lastRun+1):
-        data = getData(server, run)
-        if data!=None:
-            y.append(data['checks']['dqtimeproc']['check_params']['mean_event_rate'])
-        else:
-            x.remove(run)
-    plotEventRate(x,y)
+    #Download data from couchdb for data quality
+    print "Downloading data from couchdb for runs %i-%i\n"%(firstRun,lastRun)
+    data = download_from_couchdb("data-quality", firstRun, lastRun)
 
     sys.exit(0)
