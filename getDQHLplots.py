@@ -1,4 +1,6 @@
 from download_from_couchdb import download_from_couchdb
+from print_values import print_values
+from plotALL import plotALL
 import argparse
 import sys
 import matplotlib.pyplot as plt
@@ -24,13 +26,19 @@ if __name__=="__main__":
 
     firstRun = args.i
     lastRun = args.f
-    #Check firstrun < lastrun
+    # Check firstrun < lastrun
     if(firstRun > lastRun):
         print "First run number must be lower or equal to the last run number."
         sys.exit(1)
 
-    #Download data from couchdb for data quality
+    # Download data from couchdb for data quality
     print "Downloading data from couchdb for runs %i-%i\n"%(firstRun,lastRun)
+
+    # Create a dictionary with keys being run numbers and values the DQ checks
     data = download_from_couchdb("data-quality", firstRun, lastRun)
 
+    # Print values for each set of entries in the dictionary (each entry is a run)
+    print "\n"
+    print "PLOTTING...\n\n"
+    plotALL(data, range(firstRun, lastRun+1))
     sys.exit(0)
