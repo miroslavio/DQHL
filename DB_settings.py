@@ -1,1 +1,1 @@
-COUCHDB_SERVER = "http://snoplus:dontestopmenow@couch.snopl.us"
+COUCHDB_SERVER = "http://username:password@couch.snopl.us"
