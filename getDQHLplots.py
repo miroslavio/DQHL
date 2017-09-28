@@ -29,7 +29,7 @@ def plotEventRate(x,y):
     plt.ylabel('Mean event rate')
     plt.title('Mean event rate over a range of runs')
     plt.grid(True)
-    plt.savefig('/home/miro/Software/DQ/plots/mean_event_rate_%i-%i'%(min(x),max(x)))
+    plt.savefig('mean_event_rate_%i-%i'%(min(x),max(x)))
 
 
 if __name__=="__main__":
