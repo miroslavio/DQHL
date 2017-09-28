@@ -2,7 +2,7 @@
 
 # M. Mlejnek 28/9/17
 
-import os
+import os, errno
 import json
 import couchdb
 import sys
@@ -50,11 +50,21 @@ def download_physics_dq_data(firstRun, lastRun):
         
         if isPhysicsRun(data):
             outFile = "tables/DATAQUALITY_RECORDS_%i.ratdb" % runNum
-            with open(outFile, "w") as fil:
+            try:
+                os.makedirs("tables")
+            except OSError as e:
+                if e.errno != errno.EEXIST:
+                    raise
+            finally:
+                fil = open(outFile, 'w')
                 outString = json.dumps(data, fil, indent=1)
                 fil.write(outString)
+                fil.close()
+    ##############################################################################
+    
+    return
 
-                
+
 if __name__=="__main__":
     import argparse
     parser = argparse.ArgumentParser()
@@ -74,6 +84,11 @@ if __name__=="__main__":
                 parseOK = True
     if not parseOK:
         print parser.print_help()
+        sys.exit(1)
+
+    # Check firstrun < lastrun
+    if(firstRun > lastRun):
+        print "First run number must be lower or equal to the last run number."
         sys.exit(1)
 
     print "Downloading data-quality tables for physics runs" \
